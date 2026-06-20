@@ -6,7 +6,7 @@
 /*   By: zsonie <zsonie@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 22:28:44 by zsonie            #+#    #+#             */
-/*   Updated: 2026/05/14 22:31:03 by zsonie           ###   ########lyon.fr   */
+/*   Updated: 2026/06/20 18:39:10 by zsonie           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,22 @@
 #define MAGENTA "\033[35m"
 #define CYAN "\033[36m"
 
+#include <fstream>
 #include <iostream>
 #include <string>
+#include <map>
 
 class BitcoinExchange
 {
+private:
+
 public:
     BitcoinExchange();
-    BitcoinExchange(std::string name);
     BitcoinExchange(const BitcoinExchange &copy);
     BitcoinExchange &operator=(const BitcoinExchange &copy);
     ~BitcoinExchange();
 
-private:
-    std::string    _name;
+	int ProcessInputFile(std::ifstream &inputFile, std::ifstream &dataFile);
 };
 
 #endif
