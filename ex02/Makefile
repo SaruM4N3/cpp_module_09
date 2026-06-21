@@ -5,7 +5,8 @@ NORELINK = -MMD -MP
 RM = rm -rf
 
 BUILDDIR = obj
-SRCS = main.cpp
+SRCS = main.cpp\
+	PmergeMe.cpp
 
 OBJS = $(SRCS:%.cpp=$(BUILDDIR)/%.o)
 DEPS = $(OBJS:.o=.d)
