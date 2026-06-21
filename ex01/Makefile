@@ -1,11 +1,12 @@
-NAME = easyfind
+NAME = RPN
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 NORELINK = -MMD -MP
 RM = rm -rf
 
 BUILDDIR = obj
-SRCS = main.cpp
+SRCS = main.cpp\
+	RPN.cpp
 
 OBJS = $(SRCS:%.cpp=$(BUILDDIR)/%.o)
 DEPS = $(OBJS:.o=.d)
@@ -41,7 +42,7 @@ fclean: clean
 	@printf "$(RESET)\n"
 
 debug: fclean
-	@$(MAKE) all CXX=g++ CXXFLAGS="$(CXXFLAGS) -DDEBUG_MODE"
+	@$(MAKE) all CXX=g++ CXXFLAGS="$(CXXFLAGS) -g3 -DDEBUG_MODE"
 
 re: fclean all
 
