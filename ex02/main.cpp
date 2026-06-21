@@ -16,11 +16,29 @@ int main(int ac, char **av)
 {
     if (ac < 2)
     {
-		std::cout << RED "Error: Wrong argument nbr" RESET << std::endl;
+		std::cerr << RED "Error" RESET << std::endl;
 		return 1;
     }
-	PmergeMe p(av[1]);
-	p.ParseInput();
+
+	std::string input;
+	for (int i = 1; i < ac; ++i)
+	{
+		if (i > 1)
+			input += " ";
+		input += av[i];
+	}
+
+	PmergeMe p(input);
+	if (!p.ParseInput())
+	{
+		std::cerr << RED "Error" RESET << std::endl;
+		return 1;
+	}
+
 	p.BeforePrint();
+	p.SortVector();
+	p.SortList();
+	p.AfterPrint();
+	p.TimePrint();
     return 0;
 }

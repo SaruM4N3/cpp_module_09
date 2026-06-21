@@ -12,29 +12,37 @@
 
 #include "PmergeMe.hpp"
 
-PmergeMe::PmergeMe()
+PmergeMe::PmergeMe(): _nbrElements(0), _vectorTime(0), _listTime(0)
 {
 }
 
-PmergeMe::PmergeMe(std::string before): _before(before)
+PmergeMe::PmergeMe(std::string before): _before(before), _nbrElements(0), _vectorTime(0), _listTime(0)
 {
 }
 
 PmergeMe::PmergeMe(const PmergeMe &copy)
 {
-	(void) copy;
+	*this = copy;
 }
 
 PmergeMe &PmergeMe::operator=(const PmergeMe &copy)
 {
-	(void)copy;
+	if (this != &copy)
+	{
+		_before = copy._before;
+		_after = copy._after;
+		_nbrElements = copy._nbrElements;
+		_vectorTime = copy._vectorTime;
+		_listTime = copy._listTime;
+		_vec = copy._vec;
+		_lst = copy._lst;
+	}
     return *this;
 }
 
 PmergeMe::~PmergeMe()
 {
 }
-
 
 void PmergeMe::BeforePrint()
 {
@@ -46,28 +54,73 @@ void PmergeMe::AfterPrint()
 	std::cout << "After:   "<< _after << std::endl;
 }
 
-static void ThirdPrint(int nbrElement, double firstContainerTime)
+void PmergeMe::TimePrint()
 {
-	std::cout << "Time to process a range of  "<< nbrElement << " elements with std::[..] :  "<< firstContainerTime <<"us"<< std::endl;
+	std::cout << "Time to process a range of " << _nbrElements
+		<< " elements with std::vector : " << _vectorTime << " us" << std::endl;
+	std::cout << "Time to process a range of " << _nbrElements
+		<< " elements with std::list : " << _listTime << " us" << std::endl;
 }
 
-static void FourthPrint(int nbrElement, double secondContainerTime)
+double PmergeMe::GetTimestampUs()
 {
-	std::cout << "Time to process a range of  "<< nbrElement << " elements with std::[..] :  "<< secondContainerTime <<"us"<< std::endl;
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return static_cast<double>(tv.tv_sec) * 1000000.0 + static_cast<double>(tv.tv_usec);
 }
 
 bool PmergeMe::ParseInput()
 {
 	std::istringstream iss(_before);
-	std::string tokens;
-	while (iss >> tokens)
+	std::string token;
+	std::ostringstream beforeStream;
+
+	while (iss >> token)
 	{
-		_lst.push_back(atoi(tokens.c_str()));
-		std::cout << tokens << std::endl;
+		if (token.empty() || token.size() > 10)
+			return false;
+		for (std::string::size_type i = 0; i < token.size(); ++i)
+		{
+			if (!std::isdigit(static_cast<unsigned char>(token[i])))
+				return false;
+		}
+
+		errno = 0;
+		char *end = NULL;
+		long value = std::strtol(token.c_str(), &end, 10);
+		if (*end != '\0' || errno == ERANGE || value > INT_MAX || value < 1)
+			return false;
+
+		if (_nbrElements > 0)
+			beforeStream << " ";
+		beforeStream << value;
+
+		_vec.push_back(static_cast<int>(value));
+		_lst.push_back(static_cast<int>(value));
 		_nbrElements++;
 	}
-	std::cout << "nbrElem = " << _nbrElements << std::endl;
-	ThirdPrint(_nbrElements, _algoTime);
-	FourthPrint(_nbrElements, _algoTime);
+	if (_nbrElements == 0)
+		return false;
+	_before = beforeStream.str();
 	return true;
+}
+
+void PmergeMe::SortVector()
+{
+	double start = GetTimestampUs();
+
+	// TODO: Ford-Johnson merge-insert sort sur _vec (std::vector<int>)
+
+	double end = GetTimestampUs();
+	_vectorTime = end - start;
+}
+
+void PmergeMe::SortList()
+{
+	double start = GetTimestampUs();
+
+	// TODO: Ford-Johnson merge-insert sort sur _lst (std::list<int>)
+
+	double end = GetTimestampUs();
+	_listTime = end - start;
 }

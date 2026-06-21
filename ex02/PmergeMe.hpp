@@ -27,6 +27,10 @@
 #include <vector>
 #include <sstream>
 #include <cstdlib>
+#include <climits>
+#include <cctype>
+#include <cerrno>
+#include <sys/time.h>
 
 class PmergeMe
 {
@@ -39,15 +43,22 @@ public:
 
 	void BeforePrint();
 	void AfterPrint();
+	void TimePrint();
 	bool ParseInput();
+
+	void SortVector();
+	void SortList();
 
 private:
 	std::string _before;
 	std::string _after;
 	int _nbrElements;
-	double _algoTime;
-	std::vector<int>_vec; 
-	std::list<int> _lst; 
+	double _vectorTime;
+	double _listTime;
+	std::vector<int> _vec;
+	std::list<int> _lst;
+
+	static double GetTimestampUs();
 };
 
 #endif
