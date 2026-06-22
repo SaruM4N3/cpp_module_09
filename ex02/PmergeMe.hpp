@@ -30,6 +30,7 @@
 #include <climits>
 #include <cctype>
 #include <cerrno>
+#include <algorithm>
 #include <sys/time.h>
 
 class PmergeMe
@@ -57,6 +58,10 @@ private:
 	double _listTime;
 	std::vector<int> _vec;
 	std::list<int> _lst;
+
+	std::vector<size_t> MergeInsertVector(std::vector<size_t> idx);
+	void MergeInsertList(std::list<int> &chain);
+	void BuildAfter();
 
 	static double GetTimestampUs();
 };
