@@ -6,7 +6,7 @@
 /*   By: zsonie <zsonie@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/20 22:31:37 by zsonie            #+#    #+#             */
-/*   Updated: 2026/06/21 01:50:53 by zsonie           ###   ########lyon.fr   */
+/*   Updated: 2026/06/24 20:40:06 by zsonie           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ static int Calculus(char oper, int first, int second)
 	switch (oper)
 	{
 	case '/':
+		if (second == 0)
+			throw std::runtime_error("Error");
 		result = first / second;
 		break;
 	case '*':
