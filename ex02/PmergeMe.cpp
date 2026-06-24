@@ -105,6 +105,33 @@ bool PmergeMe::ParseInput()
 	return true;
 }
 
+static std::vector<size_t> JacobsthalInsertionOrder(size_t m)
+{
+	std::vector<size_t> order;
+	if (m == 0)
+		return order;
+
+	std::vector<size_t> jac;
+	jac.push_back(1);
+	jac.push_back(1);
+	while (jac[jac.size() - 1] < m)
+		jac.push_back(jac[jac.size() - 1] + 2 * jac[jac.size() - 2]);
+
+	order.push_back(1);
+	size_t prev = 1;
+	for (size_t i = 2; i < jac.size() && prev < m; ++i)
+	{
+		size_t boundary = jac[i] < m ? jac[i] : m;
+		for (size_t v = boundary; v > prev; --v)
+			order.push_back(v);
+		prev = boundary;
+	}
+
+	for (size_t i = 0; i < order.size(); ++i)
+		order[i] -= 1;
+	return order;
+}
+
 std::vector<size_t> PmergeMe::MergeInsertVector(std::vector<size_t> idx)
 {
 	size_t n = idx.size();
@@ -135,8 +162,10 @@ std::vector<size_t> PmergeMe::MergeInsertVector(std::vector<size_t> idx)
 	for (size_t k = 0; k < mainChain.size(); ++k)
 		position[mainChain[k]] = k;
 
-	for (size_t k = 0; k < loserIdx.size(); ++k)
+	std::vector<size_t> order = JacobsthalInsertionOrder(loserIdx.size());
+	for (size_t o = 0; o < order.size(); ++o)
 	{
+		size_t k = order[o];
 		size_t bound = position[loserBoundWinner[k]];
 		size_t lo = 0, hi = bound;
 		while (lo < hi)
@@ -220,8 +249,10 @@ void PmergeMe::MergeInsertList(std::list<int> &chain)
 	chain.clear();
 	chain.splice(chain.begin(), winners);
 
-	for (size_t k = 0; k < loserValue.size(); ++k)
+	std::vector<size_t> order = JacobsthalInsertionOrder(loserValue.size());
+	for (size_t o = 0; o < order.size(); ++o)
 	{
+		size_t k = order[o];
 		std::list<int>::iterator bound = loserBound[k];
 		std::list<int>::iterator pos = chain.begin();
 		while (pos != bound && *pos < loserValue[k])
